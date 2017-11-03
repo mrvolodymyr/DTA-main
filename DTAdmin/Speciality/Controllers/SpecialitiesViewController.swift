@@ -21,7 +21,8 @@ class SpecialitiesViewController: UIViewController, UITableViewDelegate, UITable
         refresh.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         specialitiesTableView.refreshControl = refresh
     }
-
+    
+    /* - - - refresh - - -  */
     @objc func refreshData(){
         refresh.beginRefreshing()
         DataManager.shared.getList(byEntity: .Speciality) { (speciality, error) in
@@ -55,12 +56,17 @@ class SpecialitiesViewController: UIViewController, UITableViewDelegate, UITable
         self.navigationController?.pushViewController(specialityCreateUpdateViewController, animated: true)
     }
     
+    /* - - - edit && delete - - -  */
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let edit = UITableViewRowAction(style: .normal, title: "Edit", handler: { action, indexPath in
             guard let specialityCreateUpdateViewController = UIStoryboard(name: "Speciality", bundle: nil).instantiateViewController(withIdentifier: "SpecialityCreateUpdateViewController") as? SpecialityCreateUpdateViewController else  { return }
-                specialityCreateUpdateViewController.specialityInstance = self.specialitiesArray[indexPath.row]
-                specialityCreateUpdateViewController.canEdit = true
-                self.navigationController?.pushViewController(specialityCreateUpdateViewController, animated: true)
+            specialityCreateUpdateViewController.specialityInstance = self.specialitiesArray[indexPath.row]
+            specialityCreateUpdateViewController.canEdit = true
+            specialityCreateUpdateViewController.resultModification = { updateResult in
+                self.specialitiesArray[indexPath.row] = updateResult
+                self.specialitiesTableView.reloadData()
+        }
+        self.navigationController?.pushViewController(specialityCreateUpdateViewController, animated: true)
         })
         let delete = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
             let alert = UIAlertController(title: "WARNING", message: "Do you want to delete this speciality?", preferredStyle: .alert)
@@ -87,10 +93,7 @@ class SpecialitiesViewController: UIViewController, UITableViewDelegate, UITable
         return [edit, delete]
     }
     
-    
-    
-    
-    /*------- LogIn for testing ------*/
+    /* - - - LogIn for testing - - - */
     @IBAction func loginButtonTapped(_ sender: Any) {
         //test data
         let loginText = "admin"
