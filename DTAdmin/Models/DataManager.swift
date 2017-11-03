@@ -249,17 +249,18 @@ class DataManager: HTTPManager {
         getResponse(request: request) { (entity, error) in
             if let error = error {
                 completionHandler(error)
-            } else {
-                guard let entityUnwraped = entity else { return }
-                guard let  json = entityUnwraped as? [String: Any] else {
-                    let error = NSLocalizedString("Response is empty", comment: "No data in server response")
-                    completionHandler(error)
-                    return
-                }
-                // MARK: Debug part
-                completionHandler(nil)
             }
+            //                else {
+            //                guard let entityUnwraped = entity else { return }
+            //                guard let  json = entityUnwraped as? [String: Any] else {
+            //                    let error = NSLocalizedString("Response is empty", comment: "No data in server response")
+            //                    completionHandler(error)
+            //                    return
+            //                }
+            // MARK: Debug part
+            completionHandler(nil)
         }
+//    }
     }
     func insertEntity<TypeEntity: Serializable>(entity: TypeEntity, typeEntity: Entities, completionHandler: @escaping (_ confirmation: Any?, _ error: String?) -> ()) {
         guard var request = getURLReqest(entityStructure: typeEntity, type: TypeReqest.InsertData) else {
@@ -279,7 +280,7 @@ class DataManager: HTTPManager {
             } else {
                 guard let entity = entity else { return }
                 switch typeEntity {
-                case .Subject:
+                case .Subject, .Speciality:
                     guard let  json = entity as? [[String: Any]] else {
                         let errorMsg = NSLocalizedString("Response is empty: \(entity)", comment: "No data in server response")
                         completionHandler(nil, errorMsg)

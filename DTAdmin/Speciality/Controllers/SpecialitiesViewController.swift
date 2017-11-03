@@ -20,7 +20,9 @@ class SpecialitiesViewController: UIViewController, UITableViewDelegate, UITable
         self.title = NSLocalizedString(Entities.Speciality.rawValue, comment: "All specialities")
         refresh.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         specialitiesTableView.refreshControl = refresh
+        refreshData()
     }
+    
     
     /* - - - refresh - - -  */
     @objc func refreshData(){
