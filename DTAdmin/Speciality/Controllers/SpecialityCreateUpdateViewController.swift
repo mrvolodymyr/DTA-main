@@ -44,23 +44,20 @@ class SpecialityCreateUpdateViewController: UIViewController {
     func prepareForRequest() -> Bool {
         guard let code = specialityCodeTextField.text, let name = specialityNameTextField.text else { return false }
         let dictionary: [String: Any] = ["speciality_code": code, "speciality_name": name]
-        specialityForSave = SpecialityStructure(dictionary: dictionary)
+        self.specialityForSave = SpecialityStructure(dictionary: dictionary)
         return true
     }
     
     @IBAction func CreateSpecialityButton(_ sender: Any) {
-        if !canEdit {
-            createSpeciality()
-        } else {
-            updateSpeciality()
-        }
+        !canEdit ? createSpeciality() : updateSpeciality()
         self.navigationController?.popViewController(animated: true)
     }
 
-    func createSpeciality(){
+    /* - - - create - - -  */
+    func createSpeciality() {
         if prepareForRequest() {
             guard let specialityForSave = specialityForSave else { return }
-            DataManager.shared.insertEntity(entity: specialityForSave, typeEntity: Entities.Speciality) { (result, error) in
+            DataManager.shared.insertEntity(entity: specialityForSave, typeEntity: .Speciality) { (result, error) in
                 if let error = error {
                     self.showWarningMsg(error)
                     return
@@ -76,13 +73,18 @@ class SpecialityCreateUpdateViewController: UIViewController {
         }
     }
     
+    /* - - - update - - -  */
     func updateSpeciality() {
         if prepareForRequest() {
             guard let specialityForSave = specialityForSave else { return }
-            DataManager.shared.updateEntity(byId: idForEditing, entity: specialityForSave, typeEntity: Entities.Speciality) { (error) in
+            DataManager.shared.updateEntity(byId: idForEditing, entity: specialityForSave, typeEntity: .Speciality) { (error) in
                 if let error = error {
                     self.showWarningMsg(error)
                     return
+                } else {
+                    if let resultModification = self.resultModification {
+                        resultModification(specialityForSave)
+                    }
                 }
             }
         }

@@ -279,7 +279,7 @@ class DataManager: HTTPManager {
             } else {
                 guard let entity = entity else { return }
                 switch typeEntity {
-                case .Subject, .Speciality:
+                case .Subject:
                     guard let  json = entity as? [[String: Any]] else {
                         let errorMsg = NSLocalizedString("Response is empty: \(entity)", comment: "No data in server response")
                         completionHandler(nil, errorMsg)
